@@ -1,0 +1,13 @@
+---
+
+- name: restart journald
+  listen: restart journald
+  command: systemctl reload systemd-journald.service
+
+- name: reload sshd
+  listen: reload sshd
+  command: systemctl reload sshd.service
+
+- name: reload systemd
+  listen: reload systemd
+  command: systemctl daemon-reload

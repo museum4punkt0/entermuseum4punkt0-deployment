@@ -1,0 +1,4 @@
+---
+
+traefik_acme_storage_path: /var/lib/traefik/acme.json
+traefik_log_folder: /var/log/traefik

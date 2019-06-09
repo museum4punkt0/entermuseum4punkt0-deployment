@@ -1,0 +1,20 @@
+---
+
+- name: remove Python 2
+  apt:
+    name: python
+    state: absent
+    autoremove: yes
+
+- name: link Python 3 as /usr/bin/python
+  file:
+    path: /usr/bin/python
+    src: /usr/bin/python3
+    state: link
+
+- name: ensure Ansible's pip module dependencies are installed
+  package:
+    name:
+      - python3-pip
+      - python3-setuptools
+    state: latest

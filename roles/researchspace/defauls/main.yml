@@ -1,0 +1,9 @@
+---
+
+# this is a list of mappings where each mapping defines an instance of
+# ResearchSpace with these fields:
+# - name_suffix
+# - web_domain
+# All values must be unique!
+
+researchspace_instances: []

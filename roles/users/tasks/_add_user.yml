@@ -1,0 +1,28 @@
+---
+
+- name: check whether user exists
+  command: getent passwd {{ user }}
+  register: user_existed
+
+- name: create users
+  user:
+    name: "{{ user }}"
+    password: "{{ 'ChangeMe' | password_hash('sha512') }}"
+    groups:
+      - backup
+      - docker
+      - staff
+      - sudo
+    state: present
+    shell: /bin/bash
+    skeleton: /etc/skel
+    update_password: on_create
+
+- name: expire password (ChangeMe) for newly created user
+  command: passwd --expire {{ user }}
+  when: user_existed.rc == 2
+
+- name: copy public ssh key
+  authorized_key:
+    user: "{{ user }}"
+    key: "{{ pub_key }}"

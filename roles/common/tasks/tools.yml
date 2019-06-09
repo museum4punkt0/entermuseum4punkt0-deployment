@@ -1,0 +1,17 @@
+---
+
+- name: common tools are installed
+  package:
+    name:
+      - aptitude
+      - btrfs-progs
+      - git
+      - glances
+      - joe-jupp
+      - htop
+      - mc
+      - multitail
+      - net-tools
+      - ncdu
+      - rsync
+    state: latest

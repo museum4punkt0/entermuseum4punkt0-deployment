@@ -1,0 +1,26 @@
+---
+
+# security related base configuration
+
+- name: ensure installation of relevant packages
+  package:
+    name:
+      - unattended-upgrades
+      - update-notifier-common
+    state: latest
+
+- block:
+    - name: Configure automated security updates
+      copy:
+        src: apt/10periodic
+        dest: /etc/apt/apt.conf.d/10periodic
+        owner: root
+        group: root
+        mode: ug=r
+    - name: Configure unattended security upgrades
+      template:
+        src: templates/apt/50unattended-upgrades.j2
+        dest: /etc/apt/apt.conf.d/50unattended-upgrades
+        owner: root
+        group: root
+        mode: ug=r

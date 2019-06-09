@@ -1,0 +1,13 @@
+---
+
+- hosts: all
+  become: true
+  vars:
+    borg_repository: "{{ backups_storage_path }}/borg_repository"
+  roles:
+    - common
+    - backups
+    - docker
+    - deck-chores
+    - traefik
+    - users

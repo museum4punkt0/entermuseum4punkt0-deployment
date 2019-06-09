@@ -1,0 +1,11 @@
+version: "3.7"
+
+services:
+  officer:
+    image: funkyfuture/deck-chores:0.3
+    restart: always
+    userns_mode: host
+    environment:
+      TIMEZONE: Europe/Berlin
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

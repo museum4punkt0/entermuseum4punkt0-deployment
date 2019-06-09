@@ -1,0 +1,15 @@
+---
+
+- set_fact:
+    service_root: "{{ docker_services_path}}/deck-chores"
+
+- name: copy deck-chores service configuration
+  copy:
+    src: services/deck-chores/
+    dest: "{{ service_root }}"
+    owner: root
+    group: docker
+
+- docker_compose:
+    project_src: "{{ service_root }}"
+    pull: yes

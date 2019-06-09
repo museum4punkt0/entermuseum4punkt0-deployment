@@ -1,0 +1,14 @@
+{{ traefik_log_folder }}/*.log {
+    daily
+    rotate 14
+
+    dateext
+    dateyesterday
+
+    compress
+    delaycompress
+
+    lastaction
+      docker-compose -f {{ service_root }}/docker-compose.yml kill -s SIGUSR1 webproxy
+    endscript
+}

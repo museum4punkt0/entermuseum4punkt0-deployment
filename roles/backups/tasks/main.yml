@@ -1,0 +1,82 @@
+---
+
+- name: install required borg backup
+  apt:
+    name:
+      - borgbackup=1.1*
+    state: present
+
+- name: install curlftpfs and sysvinit-utils
+  apt:
+    name:
+      - curlftpfs
+      - sysvinit-utils
+    state: latest
+
+- name: store ftp credentials
+  copy:
+    content: |
+      machine {{ ftp_host }}
+      login {{ ftp_user }}
+      password {{ ftp_password }}
+    dest: /root/.netrc
+    owner: root
+    group: root
+    mode: u=r,go=
+
+- name: mount ftp storage
+  mount:
+    path: "{{ backups_storage_path }}"
+    src: curlftpfs#{{ ftp_host }}
+    fstype: fuse
+    opts: auto,ssl,_netdev
+    state: mounted
+
+- name: create a directory for Borg's cache & config
+  file:
+    path: /var/lib/borg
+    state: directory
+    owner: root
+    group: root
+    mode: ug=rwx,o=
+
+- name: globally set BORG_BASE_DIR
+  copy:
+    content: BORG_BASE_DIR=/var/lib/borg
+    dest: /etc/profile.d/borg-base-dir.sh
+    owner: root
+    group: root
+    mode: u=rw,go=r
+
+- name: initialize borg repo
+  shell: borg init -e repokey-blake2 {{ borg_repository }}
+  environment:
+    BORG_PASSPHRASE: "{{ borg_repokey }}"
+  args:
+    creates: "{{ borg_repository }}"
+
+- name: configure a cron job that breaks accidentally left Borg locks
+  cron:
+    name: "break borg lock"
+    user: root
+    cron_file: /etc/crontab
+    hour: "0"
+    minute: "0"
+    job: pidof borg || borg break-lock {{ borg_repository }}
+
+- name: copy Borg image source
+  copy:
+    src: borg_image/
+    dest: "{{ docker_images_path }}/borg"
+    owner: root
+    group: docker
+    mode: ug=rw,o=
+
+- name: build Borg image
+  docker_image:
+    name: borgbackup
+    source: build
+    force_source: yes
+    build:
+      path: "{{ docker_images_path }}/borg"
+      pull: yes

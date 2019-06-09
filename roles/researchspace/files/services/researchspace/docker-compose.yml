@@ -1,0 +1,67 @@
+version: "3.7"
+
+services:
+
+  platform:
+    image: metaphacts/researchspace:${RESEARCHSPACE_TAG}
+    restart: always
+    stop_grace_period: "1m"
+    depends_on:
+      - blazegraph
+    networks:
+      - default
+      - webgateway
+    volumes:
+      - researchspace-apps:/apps
+      - researchspace-data:/runtime-data
+    environment:
+      JAVA_OPTS: ""
+      PLATFORM_OPTS: >
+        -Dconfig.environment.sparqlEndpoint=http://blazegraph:8080/blazegraph/sparql
+        -Dlog4j.configurationFile=file:///var/lib/jetty/webapps/etc/log4j2.xml
+    labels:
+      - traefik.frontend.rule=Host:${WEB_DOMAIN}
+      - traefik.port=8080
+      - traefik.enable=true
+
+  blazegraph:
+    image: metaphacts/blazegraph-basic:${BLAZEGRAPH_TAG}
+    restart: always
+    stop_grace_period: "1m"
+    environment:
+      JAVA_OPTS: ""
+    volumes:
+      - blazegraph-data:/blazegraph-data
+
+  backup:
+    image: borgbackup
+    restart: always
+    userns_mode: host
+    network_mode: none
+    labels:
+      deck-chores.backup.command: "/bin/sh /backup.sh"
+      deck-chores.backup.cron: "1 0 0"
+      deck-chores.backup.jitter: "30m"
+    environment:
+      WEB_DOMAIN: ${WEB_DOMAIN}
+      BORG_PASSPHRASE: ${BORG_PASSPHRASE}
+      BORG_REPO: /borg_repository
+    volumes:
+      - ./backup.sh:/backup.sh:ro
+      - ${BORG_REPOSITORY}:/borg_repository
+      - blazegraph-data:/src/blazegraph-data:ro
+      - researchspace-apps:/src/researchspace-apps:ro
+      - researchspace-data:/src/researchspace-data:ro
+      - /var/lib/borg:/var/lib/borg
+
+
+volumes:
+  blazegraph-data:
+  researchspace-apps:
+  researchspace-data:
+
+
+networks:
+  webgateway:
+    external:
+      name: webgateway

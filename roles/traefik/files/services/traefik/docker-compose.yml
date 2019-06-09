@@ -1,0 +1,41 @@
+version: '3.7'
+
+services:
+  webproxy:
+    image: traefik:1.7-alpine
+    command: ["--acme.email=${ACME_EMAIL}"]
+    restart: always
+    userns_mode: host
+    networks:
+      - webgateway
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${LOG_FOLDER}:/logs
+      - ${ACME_STORAGE}:/acme.json
+      - ./traefik.toml:/traefik.toml:ro
+
+  backup:
+    image: borgbackup
+    restart: always
+    userns_mode: host
+    network_mode: none
+    labels:
+      deck-chores.backup.command: "/bin/sh /backup.sh"
+      deck-chores.backup.interval: "daily"
+    environment:
+      BORG_PASSPHRASE: ${BORG_PASSPHRASE}
+      BORG_REPO: /borg_repository
+    volumes:
+      - ./backup.sh:/backup.sh:ro
+      - ${BORG_REPOSITORY}:/borg_repository
+      - ${ACME_STORAGE}:/src/acme.json:ro
+      - /var/lib/borg:/var/lib/borg
+
+
+networks:
+  webgateway:
+    external:
+      name: webgateway

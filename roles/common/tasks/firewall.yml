@@ -1,0 +1,48 @@
+---
+
+- name: install ufw
+  apt:
+    package: ufw
+    state: latest
+
+- name: diable ufw
+  ufw:
+    state: disabled
+
+- name: reset ufw
+  ufw:
+    state: reset
+
+- name: allow incoming ports
+  ufw:
+    direction: in
+    rule: allow
+    port: "{{ item }}"
+  with_items: "{{ ufw_allowed_incoming_ports }}"
+
+- name: limit connection attempts to sshd
+  ufw:
+    direction: in
+    rule: limit
+    port: "{{ sshd_port }}"
+    protocol: tcp
+
+- name: set ufw default policy to deny
+  ufw:
+    direction: incoming
+    policy: deny
+
+- name: configure the kernel to keep connections alive when enabling the firewall
+  sysctl:
+    name: net.netfilter.nf_conntrack_tcp_be_liberal
+    value: "1"
+    state: present
+    sysctl_set: yes
+    reload: yes
+
+- name: enable ufw
+  ufw:
+    state: enabled
+
+- name: remove old rules backups
+  command: find /etc/ufw -name "*.rules.*_*" -mtime 7 -delete

@@ -1,0 +1,63 @@
+---
+
+- set_fact:
+    service_root: "{{ docker_services_path}}/traefik"
+
+- name: create traefik access log folder
+  file:
+    path: "{{ traefik_log_folder }}"
+    state: directory
+    owner: root
+    group: root
+    mode: ug=rwx,o=
+
+- name: create folder for ACME storage
+  file:
+    path: "{{ traefik_acme_storage_path | dirname }}"
+    state: directory
+    owner: root
+    group: root
+    mode: ug=rwx,o=
+
+- name: create a stub acme.json
+  copy:
+    content: "{}"
+    dest: "{{ traefik_acme_storage_path }}"
+    force: no
+    owner: root
+    group: root
+    mode: u=r,go=
+
+- name: create a network for web-accessible services
+  docker_network:
+    name: webgateway
+
+- name: copy traefik service configuration
+  copy:
+    src: services/traefik/
+    dest: "{{ service_root }}"
+    owner: root
+    group: docker
+
+- name: write configuration variables
+  copy:
+    dest: "{{ service_root }}/.env"
+    content: |
+      ACME_EMAIL={{ acme_email }}
+      ACME_STORAGE={{ traefik_acme_storage_path }}
+      BORG_PASSPHRASE={{ borg_repokey }}
+      BORG_REPOSITORY={{ borg_repository }}
+      LOG_FOLDER={{ traefik_log_folder }}
+    owner: root
+    group: docker
+
+- docker_compose:
+    project_src: "{{ service_root }}"
+
+- name: configure logrotate
+  template:
+    src: logrotate.j2
+    dest: /etc/logrotate.d/traefik
+    owner: root
+    group: root
+    mode: ug=r,o=

@@ -1,0 +1,6 @@
+---
+
+- include_tasks: _deploy_instance.yml
+  vars:
+    instance: "{{ item }}"
+  with_items: "{{ researchspace_instances }}"

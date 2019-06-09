@@ -27,9 +27,9 @@ Note that Windows is not supported, but [it is usable]([1]) from the
 [Windows Subsystem for Linux (WSL)]([2]). You may also refer to
 [Ansible's Installation Guide]([3]).
 
-[1]: https://docs.ansible.com/ansible/latest/user_guide/windows_faq.html#can-ansible-run-on-windows
+[1]: https://docs.ansible.com/ansible/2.8/user_guide/windows_faq.html#can-ansible-run-on-windows
 [2]: https://docs.microsoft.com/en-us/windows/wsl/about
-[3]: https://docs.ansible.com/ansible/2.7/installation_guide/intro_installation.html
+[3]: https://docs.ansible.com/ansible/2.8/installation_guide/intro_installation.html
 
 ### Ubuntu
 
@@ -46,9 +46,9 @@ An installation via [brew](https://brew.sh) is recommended:
 
 ### Useful Resources
 
-- the [Ansible documentation](https://docs.ansible.com/ansible/latest/index.html)
-- the [Ansible module index](https://docs.ansible.com/ansible/latest/modules_by_category.html)
-- Ansible's [YAML reference](https://docs.ansible.com/ansible/latest/YAMLSyntax.html)
+- the [Ansible documentation](https://docs.ansible.com/ansible/2.8/index.html)
+- the [Ansible module index](https://docs.ansible.com/ansible/2.8/modules_by_category.html)
+- Ansible's [YAML reference](https://docs.ansible.com/ansible/2.8/YAMLSyntax.html)
 
 
 ## Testing with Vagrant
@@ -127,9 +127,13 @@ when invoking `ssh`:
 
 #### Adapting the project configuration
 
-The resulting `<username>_id.pub` is copied into the
-`roles/users/files/pub_keys` folder and the `<username>` is appended to the
-`users` variable in `roles/users/vars/main.yml`.
+In a suited variables file (e.g. `group_vars/all.yml`), the list of the `users`
+variable is extended with a mapping that contains the user name in the field
+with the same name and the *content* of the previously created
+`<username>_id.pub` asssigned to the `pub_key` field.
+
+Note that more specific variable files override the values of less specific
+ones, they do not extend a list from a broader scope.
 
 
 ### Applying the configuration and connecting
@@ -173,12 +177,18 @@ the configuration of:
 - a variety of good practices and tools
 
 A host's connection parameters must be set in the `hosts.yml` file (refer
-[here](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html)
+[here](https://docs.ansible.com/ansible/2.8/user_guide/intro_inventory.html)
 for details), and these variables can or must be set in either
 `group_vars/all.yml` or `host_vars/<ansible_host>.yml`:
 
 - `acme_email` (mandatory) - an email address that will be associated with the
-  TLS certificates issued by [Let's encrypt](https://letsencrypt.org/)
+  TLS certificates issued by [Let's encrypt](https://letsencrypt.org
+- `assets_local_dir` (mandatory for synchronization) - the directory path on the
+  workstation where file assets are mirrored from
+- `assets_root_dir` (mandatory) - the directory path on the host where file
+  assets are located
+- `assets_web_domain` (mandatory) - the domain name that shall serve the asset
+  files
 - `backups_storage_path` (mandatory) - the path where an FTP resource is mounted
   for storing backup data
 - `borg_repokey` (mandatory) - a password to unlock an encrypted BorgBackup
@@ -191,6 +201,7 @@ for details), and these variables can or must be set in either
 - `docker_compose_version` (default: `1.24.0`) - the desired compatibility
   version of Docker-Compose, compatibility here means that e.g it would be
   upgraded to `1.24.1` etc. but not `1.25.0`
+- `docker_images_path` (mandatory) - the root path for image sources
 - `docker_services_path` (mandatory) - the root path in which the configuration
   files of Docker-Compose project are stored
 - `extra_packages` (defaults to an empty list) - a list of package names that
@@ -207,10 +218,12 @@ for details), and these variables can or must be set in either
 - `traefik_acme_storage_path` (default: `/var/lib/traefik/acme.json`) - the
   file where træfik's builtin ACME client stores its data
 - `traefik_log_folder` (default: `/var/log/traefik`) - the location where
-  træfik's log files are written and rotated
+  træfik's access log files are written and rotated
 - `ufw_allowed_incoming_ports` (defaults to `["80", "443"]`) - ports that other
   machines can connect to from the internet, the `sshd_port` is allowed (though
   throttled) in any case
+- `users` (mandatory) - a list of mappings where the fields `name` and `pub_key`
+  define a user by the desired name and the public part of an `ssh` key pair
 
 The configuration can the be applied with:
 
@@ -232,6 +245,14 @@ where each mapping describes a desired instance. A mapping has these fields:
   instance's configuration in the filesystem
 - `web_domain` - the domain that this instance shall serve
 
+Along with it a *single* web server for static assets is deployed.
+These variables must be configured for it:
+
+- `assets_root_dir` (mandatory) - the directory path on the host system that
+  contains the assets
+- `assets_web_domain` (mandatory) - the domain where the assets shall be
+  retrieved from
+
 Similarly to the base system configuration, this is apllied with:
 
     ansible-playbook researchspace.yml
@@ -241,3 +262,13 @@ host. To do so, log into the machine and:
 
     cd <docker_services_path>/researchspace-<name_suffix>
     docker-compose down
+
+There's also a playbook to synchronize a local folder on the workstation to the
+assets folder on the host. In order to use it, set the variable
+`assets_local_dir` to the path where the assets reside on the workstation and
+run:
+
+    ansible-playbook -l <host> sync-assets.yml
+
+IMPORTANT! The assets are mirrored *from* the workstation to the host. Any
+changes to files on the host are lost by a synchronization.

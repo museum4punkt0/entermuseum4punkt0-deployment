@@ -1,0 +1,26 @@
+---
+
+- set_fact:
+    service_root: "{{ docker_services_path }}/researchspace-{{ instance.name_suffix }}"
+
+- copy:
+    src: services/researchspace/
+    dest: "{{ service_root }}"
+    owner: root
+    group: docker
+
+- copy:
+    content: |
+      BLAZEGRAPH_TAG={{ instance.blazegraph_image_tag }}
+      BORG_PASSPHRASE={{ borg_repokey }}
+      BORG_REPOSITORY={{ borg_repository }}
+      RESEARCHSPACE_TAG={{ instance.researchspace_image_tag }}
+      WEB_DOMAIN={{ instance.web_domain }}
+    dest: "{{ service_root }}/.env"
+    owner: root
+    group: docker
+    mode: ug=r,o=
+
+- docker_compose:
+    project_src: "{{ service_root }}"
+    build: "yes"

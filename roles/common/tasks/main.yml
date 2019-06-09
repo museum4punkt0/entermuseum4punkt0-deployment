@@ -1,0 +1,72 @@
+---
+
+- name: check proper OS distribution
+  assert:
+    that:
+      - ansible_distribution == "Ubuntu"
+      - ansible_distribution_release == "bionic"
+    fail_msg: "All tasks have been tested against Ubuntu Bionic."
+
+- name: update packages lists
+  apt: update_cache=yes
+
+- name: disable graphical terminal
+  replace:
+    path: /etc/default/grub
+    regexp: ^#?GRUB_TERMINAL=.*
+    replace: GRUB_TERMINAL=console
+
+- name: install packages defined for this host
+  package:
+    name: "{{ extra_packages }}"
+    state: latest
+
+- import_tasks: security_updates.yml
+- import_tasks: tools.yml
+- import_tasks: python.yml
+- import_tasks: firewall.yml
+
+- name: set some sane sshd configuration values
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?{{ item.key }} .*"
+    line: "{{ item.key }} {{ item.value }}"
+  with_dict:
+    PasswordAuthentication: "no"
+    PermitEmptyPasswords: "no"
+    PermitRootLogin: "no"
+    Port: "{{ sshd_port }}"
+    PubkeyAuthentication: "yes"
+    StrictModes: "yes"
+    X11Forwarding: "no"
+  notify: reload sshd
+
+- name: configure journald to keep logs on shutdowns
+  lineinfile:
+    path: /etc/systemd/journald.conf
+    regexp: "^#?{{ item.key }}=.*"
+    line: "{{ item.key }}={{ item.value }}"
+  with_dict:
+    Storage: persistent
+    SystemMaxUse: "1G"
+  notify: reload journald
+
+- block:
+  - set_fact:
+      daily_reboot_hour: "{{ daily_reboot_time.split(':')[0] }}"
+      daily_reboot_minute: "{{ daily_reboot_time.split(':')[1] }}"
+  - name: set daily reboot time
+    cron:
+      name: daily reboot
+      hour: "{{ daily_reboot_hour }}"
+      minute: "{{ daily_reboot_minute }}"
+      job: /sbin/reboot
+  when: daily_reboot_time != ''
+
+- name: configure a monthly btrfs scrub
+  copy:
+    dest: /etc/cron.monthly/btrfs-scrub
+    content: btrfs scrub start /var/lib/docker
+    owner: root
+    group: root
+    mode: ug=rx,o=

@@ -1,0 +1,9 @@
+---
+
+daily_reboot_time: ""
+extra_packages: []
+reboot_time_after_security_upgrades: ""
+sshd_port: "22"
+ufw_allowed_incoming_ports:
+  - "80"
+  - "443"
