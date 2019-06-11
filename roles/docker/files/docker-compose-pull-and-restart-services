@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -e
+
+SERVICES=$(cat ./autopull-services)
+
+docker-compose pull --quiet $SERVICES
+docker-compose up --detach $SERVICES

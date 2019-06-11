@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -e
+
+SERVICES=$(cat ./autobuild-services)
+
+docker-compose build --pull $SERVICES
+docker-compose up --detach $SERVICES

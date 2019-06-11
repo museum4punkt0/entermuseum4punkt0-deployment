@@ -54,3 +54,25 @@
   with_items:
     - "{{ docker_images_path }}"
     - "{{ docker_services_path }}"
+
+- name: copy scripts for automated update of services
+  copy:
+    src: "{{ item }}"
+    dest: /usr/local/bin/
+    owner: root
+    group: docker
+    mode: ug=rx
+  with_items:
+    - docker-compose-build-and-restart-services
+    - docker-compose-pull-and-restart-services
+
+- name: add a cron job for daily updates of service images
+  cron:
+    name: update service images
+    user: root
+    cron_file: /etc/crontab
+    hour: "4"
+    minute: "0"
+    job: >
+      find {{ docker_services_path }} -type f -name "autopull-services" -execdir docker-compose-pull-and-restart-services \; ;
+      find {{ docker_services_path }} -type f -name "autobuild-services" -execdir docker-compose-build-and-restart-services \;
