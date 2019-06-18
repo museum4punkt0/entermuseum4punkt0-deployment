@@ -2,3 +2,11 @@
 .vagrant/
 
 *.retry
+
+# files containing sensible data
+HOSTS.md
+group_vars/*.yml
+host_vars/*.yml
+hosts.yml
+janitor_id
+janitor_setup.sh

@@ -1,5 +1,8 @@
 # Contents of this repository
 
+Some of the mentioned files contain sensible information and are thus not
+included in the repository but to be delivered directly.
+
 ## `group_vars`
 
 Contains variable definitions for the host groups defined in `hosts.yml`
