@@ -51,23 +51,6 @@ An installation via [brew](https://brew.sh) is recommended:
 - Ansible's [YAML reference](https://docs.ansible.com/ansible/2.8/YAMLSyntax.html)
 
 
-## Testing with Vagrant
-
-[Vagrant](https://www.vagrantup.com/) is a tool that provides virtual machines
-for various operating systems and virtualization solutions. The project folder
-contains a `Vagrantfile` that defines a virtual machine that can be used to
-test the included routines. Given that you have Vagrant installed and configured
-on the workstation, you can
-
-    vagrant up
-
-to create and start that virtual machine. The other two commonly needed
-subcommands are `halt` and `destroy`.
-
-Mind that ResearchSpace requires quiet a lot of resources and it might heavily
-impact the performance of your workstation.
-
-
 ## Initial setup of a remote host
 
 The Docker daemon will be configured to use the `btrfs` volume driver and thus
@@ -82,9 +65,6 @@ privileges. Given that you have the credentials to connect via `ssh`, you may do
 that with one command from your workstation:
 
     ssh <user>@<host> 'sudo bash -s' < janitor_setup.sh
-
-This step is included in the provisioning of the aforementioned `Vagrantfile`
-for a testing environment.
 
 
 ## Configuring users

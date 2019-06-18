@@ -79,7 +79,3 @@ The Ansible playbook to configure a host for ResearchSpace deployments.
 
 The Ansible playbook to mirror the static asset files from the workstation to
 the host.
-
-## `Vagrantfile`
-
-Can be used to setup a test host with [Vagrant](https://www.vagrantup.com/).
