@@ -1,4 +1,4 @@
-# ResearchSpace @ Museum 4.0
+# ResearchSpace @ museum4punkt0
 
 *General hints and terminology:*
 
