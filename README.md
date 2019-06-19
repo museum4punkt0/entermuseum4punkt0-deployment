@@ -83,7 +83,7 @@ keys and adapting the project's configuration.
 1. The user creates a folder `~/.ssh` if not existant: `mkdir ~/.ssh`
 2. S/he changes the working directory: `cd ~/.ssh`
 3. A pair of keys for authentication is created.
-  - `ssh-keygen -t ed15519 -f <username>_id`
+  - `ssh-keygen -t ed25519 -f <username>_id`
   - as a result two files, `<username>_id` and `<username>_id.pub` are created
     in the current working directory
 4. The configuration file `~/.ssh/config` is created or amended with such
@@ -205,7 +205,7 @@ for details), and these variables can or must be set in either
 - `users` (mandatory) - a list of mappings where the fields `name` and `pub_key`
   define a user by the desired name and the public part of an `ssh` key pair
 
-The configuration can the be applied with:
+The configuration can the be applied with from the workstation:
 
     ansible-playbook setup-base-system.yml
 
@@ -224,6 +224,8 @@ where each mapping describes a desired instance. A mapping has these fields:
 - `name_suffix` - a possibly arbritrary string that is used to distinguish the
   instance's configuration in the filesystem
 - `web_domain` - the domain that this instance shall serve
+- TODO document variables for image tags
+
 
 Along with it a *single* web server for static assets is deployed.
 These variables must be configured for it:

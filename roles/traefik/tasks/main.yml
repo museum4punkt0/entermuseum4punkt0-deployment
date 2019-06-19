@@ -1,7 +1,7 @@
 ---
 
 - set_fact:
-    service_root: "{{ docker_services_path}}/traefik"
+    service_root: "{{ docker_services_path }}/traefik"
 
 - name: create traefik access log folder
   file:
