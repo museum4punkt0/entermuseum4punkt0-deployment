@@ -220,7 +220,10 @@ where each mapping describes a desired instance. A mapping has these fields:
 - `name_suffix` - a possibly arbritrary string that is used to distinguish the
   instance's configuration in the filesystem
 - `web_domain` - the domain that this instance shall serve
-- TODO document variables for image tags
+- `blazegraph_image_tag` - the tag of the `metaphacts/blazegraph-basic` image
+  that shall be used for the Blazegraph service
+- `researchspace_image_tag` - the tag of the `metaphacts/researchspace` image
+  that shall be used
 
 
 Similarly to the base system configuration, this is apllied with:
