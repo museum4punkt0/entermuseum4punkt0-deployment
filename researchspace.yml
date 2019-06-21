@@ -6,5 +6,4 @@
     borg_repository: "{{ backups_storage_path }}/borg_repository"
     project_files: "{{ playbook_dir }}/files"
   roles:
-    - assets-webserver
     - researchspace

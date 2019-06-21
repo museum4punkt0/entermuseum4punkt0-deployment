@@ -163,12 +163,6 @@ for details), and these variables can or must be set in either
 
 - `acme_email` (mandatory) - an email address that will be associated with the
   TLS certificates issued by [Let's encrypt](https://letsencrypt.org
-- `assets_local_dir` (mandatory for synchronization) - the directory path on the
-  workstation where file assets are mirrored from
-- `assets_root_dir` (mandatory) - the directory path on the host where file
-  assets are located
-- `assets_web_domain` (mandatory) - the domain name that shall serve the asset
-  files
 - `backups_storage_path` (mandatory) - the path where an FTP resource is mounted
   for storing backup data
 - `borg_repokey` (mandatory) - a password to unlock an encrypted BorgBackup
@@ -225,14 +219,6 @@ where each mapping describes a desired instance. A mapping has these fields:
   instance's configuration in the filesystem
 - `web_domain` - the domain that this instance shall serve
 
-Along with it a *single* web server for static assets is deployed.
-These variables must be configured for it:
-
-- `assets_root_dir` (mandatory) - the directory path on the host system that
-  contains the assets
-- `assets_web_domain` (mandatory) - the domain where the assets shall be
-  retrieved from
-
 Similarly to the base system configuration, this is apllied with:
 
     ansible-playbook researchspace.yml
@@ -242,13 +228,3 @@ host. To do so, log into the machine and:
 
     cd <docker_services_path>/researchspace-<name_suffix>
     docker-compose down
-
-There's also a playbook to synchronize a local folder on the workstation to the
-assets folder on the host. In order to use it, set the variable
-`assets_local_dir` to the path where the assets reside on the workstation and
-run:
-
-    ansible-playbook -l <host> sync-assets.yml
-
-IMPORTANT! The assets are mirrored *from* the workstation to the host. Any
-changes to files on the host are lost by a synchronization.
