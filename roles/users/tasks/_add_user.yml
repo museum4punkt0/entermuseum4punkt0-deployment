@@ -26,3 +26,20 @@
   authorized_key:
     user: "{{ user }}"
     key: "{{ pub_key }}"
+
+- name: create Docker client configuration folder
+  file:
+    path: /home/{{ user }}/.docker
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: ug=rwx,o=
+
+- name: link Docker client's config.json for user
+  file:
+    dest: /home/{{ user }}/.docker/config.json
+    src: /etc/docker/config.json
+    state: link
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: ugo=rwx

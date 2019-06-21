@@ -175,6 +175,8 @@ for details), and these variables can or must be set in either
 - `docker_compose_version` (default: `1.24.0`) - the desired compatibility
   version of Docker-Compose, compatibility here means that e.g it would be
   upgraded to `1.24.1` etc. but not `1.25.0`
+- `docker_hub_token` (mandatory) - An authorization token for `hub.docker.com`
+  that allows to pull all the desired images
 - `docker_images_path` (mandatory) - the root path for image sources
 - `docker_services_path` (mandatory) - the root path in which the configuration
   files of Docker-Compose project are stored
@@ -228,3 +230,11 @@ host. To do so, log into the machine and:
 
     cd <docker_services_path>/researchspace-<name_suffix>
     docker-compose down
+
+## Asssorted knowledge that may prove useful at some point
+
+- All system users share the same access token that was created by logging in
+  with the credentials of a user on `hub.docker.com` that has the privilege to
+  access the image repository that contains the ResearchSpace image.
+  - As a result any `docker login` or `docker logout` is effective for all
+    users.

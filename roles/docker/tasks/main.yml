@@ -15,7 +15,7 @@
     path: /etc/docker
     state: directory
     owner: root
-    group: root
+    group: docker
     mode: ug=rwx,o=
 
 - name: write Docker configuration
