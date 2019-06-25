@@ -238,8 +238,66 @@ host. To do so, log into the machine and:
 
 ## Asssorted knowledge that may prove useful at some point
 
-- All system users share the same access token that was created by logging in
-  with the credentials of a user on `hub.docker.com` that has the privilege to
-  access the image repository that contains the ResearchSpace image.
-  - As a result any `docker login` or `docker logout` is effective for all
-    users.
+### Possible pitfalls
+
+All system users share the same access token that was created by logging in
+with the credentials of a user on `hub.docker.com` that has the privilege to
+ccess the image repository that contains the ResearchSpace image.
+As a result any `docker login` or `docker logout` is effective for all users.
+
+### Troubleshooting 101
+
+As there is no monitoring system to watch the state and resource usage, trouble
+may arise out of the blue. Here are some advices what to check in order to
+determine the source:
+
+Stay calm and carry on.
+
+Are the domain names properly resolved? This is best answered by asking this
+question from a client that cannot connect to a website from the command line
+with `dig <domain name>` (or `nslookup …` on Windows). The answer should
+contain the known IP addresses.
+
+Can I login via `ssh`?
+If not, use an RDP client to connect to the machine with the parameters that
+are provided in `HOSTS.md`. If you can't login with your account at that point,
+logging in with the `root` user's credentials is the last resort.
+
+Though one measure might still be helping when none of these access attempts
+are working: Login to the provider's website, navigate to the control panel
+and restart the host. If that let's you access the system again, a further
+inspection is necessary. If not, contact the support of your choice, contacting
+the provider might be a good idea at this point.
+
+Is there enough space on in the filesystems?
+`df -h` can tell us. If none of the values in the `Use%` is as high as 98%,
+there should be enough space. Nonetheless a value of 80% tells that the disk
+usage should be investigated soon and steps be taken accordingly, a value of
+90% makes that an immediate matter.
+
+A general overview of the system's workload can be accessed with `sudo glances`.
+Press `h` to show/hide all available keyboard shortcuts.
+
+To check whether the network interface configuration is still valid, an
+`ifconfig eth0` should also show the expected IP addresses. `route` should also
+show that the `eth0` interface is used to connect to the default gateway.
+
+At this point a reboot might solve any system hickups: `sudo reboot`
+
+`docker ps` shows all running containers, `docker ps -a` includes those that
+are not running and they may point to problems. Containers whose `STATUS` is
+`Restarting` are likely to be failing continuously and must be investigated in
+detail.
+
+To get more detail, it is best to change to a service's project folder (e.g.
+`/opt/services/traefik`). There the state of the services can be inspected with
+`docker-compose ps`, the logs can be viewed in a pager with
+`docker-compose --no-color | less`.
+
+When a web application is malfunctioning it might be useful to watch all
+HTTP requests - best in a separate terminal window - with
+`sudo tail -f /var/log/traefik/access.log`. There can be some helpful indicators
+there, like properly formed paths, returned status codes and response times.
+Oh, on the other side, all major web browser have something like a "Developer
+Tools" window for web pages that can tell their point of view on the request-
+response-story in a tab often called "Network".
