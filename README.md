@@ -178,8 +178,8 @@ for details), and these variables can or must be set in either
 - `docker_hub_token` (mandatory) - An authorization token for `hub.docker.com`
   that allows to pull all the desired images
 - `docker_images_path` (mandatory) - the root path for image sources
-- `docker_services_path` (mandatory) - the root path in which the configuration
-  files of Docker-Compose project are stored
+- `docker_services_path` (default: `/opt/services`) - the root path in which the
+  configuration files of Docker-Compose project are stored
 - `extra_packages` (defaults to an empty list) - a list of package names that
   shall be installed
 - `ftp_host`, `ftp_user` and `ftp_password` (all mandatory) are the credentials
@@ -225,6 +225,13 @@ where each mapping describes a desired instance. A mapping has these fields:
 - `researchspace_image_tag` - the tag of the `metaphacts/researchspace` image
   that shall be used
 
+With the default configuration settings, one directory per instance will be
+created at `/opt/services/researchspace-<name_suffix>`. This will contain a
+directory names `apps` where
+[ResearchSpace apps](http://researchspace.metaphacts.cloud/resource/Help:Apps)
+can be added, e.g. by cloning from a `git` repository. As the contents are
+read-only by the instance, their ownership shouldn't matter as long as the files
+and directories are accessible by *other* users than the owner.
 
 Similarly to the base system configuration, this is apllied with:
 
