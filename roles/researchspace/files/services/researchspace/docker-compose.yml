@@ -12,7 +12,7 @@ services:
       - default
       - webgateway
     volumes:
-      - researchspace-apps:/apps
+      - ./apps:/apps:ro
       - researchspace-data:/runtime-data
     environment:
       JAVA_OPTS: ""
@@ -50,14 +50,13 @@ services:
       - ./backup.sh:/backup.sh:ro
       - ${BORG_REPOSITORY}:/borg_repository
       - blazegraph-data:/src/blazegraph-data:ro
-      - researchspace-apps:/src/researchspace-apps:ro
+      - ./apps:/src/researchspace-apps:ro
       - researchspace-data:/src/researchspace-data:ro
       - /var/lib/borg:/var/lib/borg
 
 
 volumes:
   blazegraph-data:
-  researchspace-apps:
   researchspace-data:
 
 
