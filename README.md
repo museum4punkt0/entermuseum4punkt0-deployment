@@ -225,14 +225,6 @@ where each mapping describes a desired instance. A mapping has these fields:
 - `researchspace_image_tag` - the tag of the `metaphacts/researchspace` image
   that shall be used
 
-With the default configuration settings, one directory per instance will be
-created at `/opt/services/researchspace-<name_suffix>`. This will contain a
-directory names `apps` where
-[ResearchSpace apps](http://researchspace.metaphacts.cloud/resource/Help:Apps)
-can be added, e.g. by cloning from a `git` repository. As the contents are
-read-only by the instance, their ownership shouldn't matter as long as the files
-and directories are accessible by *other* users than the owner.
-
 Similarly to the base system configuration, this is apllied with:
 
     ansible-playbook researchspace.yml
@@ -242,6 +234,25 @@ host. To do so, log into the machine and:
 
     cd <docker_services_path>/researchspace-<name_suffix>
     docker-compose down
+
+
+## Deploying ResearchSpace Apps
+
+With the default configuration settings, one directory per instance will be
+created at `/opt/services/researchspace-<name_suffix>`. This will contain a
+directory names `apps` where
+[ResearchSpace apps](http://researchspace.metaphacts.cloud/resource/Help:Apps)
+can be added, e.g. by cloning from a `git` repository. As the contents are
+read-only by the instance, their ownership shouldn't matter as long as the files
+and directories are accessible by *other* users than the owner.
+
+If a changed app requires a restart of the ResearchSpace platform, it can be
+facilitated with:
+
+    docker-compose restart platform
+
+(executed with the aforementioned directory as working directory.)
+
 
 ## Asssorted knowledge that may prove useful at some point
 
