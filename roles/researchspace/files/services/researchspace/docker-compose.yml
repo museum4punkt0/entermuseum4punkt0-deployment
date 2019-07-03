@@ -5,6 +5,7 @@ services:
   platform:
     image: metaphacts/researchspace:${RESEARCHSPACE_TAG}
     restart: always
+    userns_mode: host  # b/c of mounted volume
     stop_grace_period: "1m"
     depends_on:
       - blazegraph
