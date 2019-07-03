@@ -162,7 +162,7 @@ for details), and these variables can or must be set in either
 `group_vars/all.yml` or `host_vars/<ansible_host>.yml`:
 
 - `acme_email` (mandatory) - an email address that will be associated with the
-  TLS certificates issued by [Let's encrypt](https://letsencrypt.org
+  TLS certificates issued by [Let's encrypt](https://letsencrypt.org)
 - `backups_storage_path` (mandatory) - the path where an FTP resource is mounted
   for storing backup data
 - `borg_repokey` (mandatory) - a password to unlock an encrypted BorgBackup
