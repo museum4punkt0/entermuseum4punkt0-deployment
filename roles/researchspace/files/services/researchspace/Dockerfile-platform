@@ -1,0 +1,3 @@
+ARG RESEARCHSPACE_TAG
+FROM metaphacts/researchspace:$RESEARCHSPACE_TAG
+COPY --chown=100:101 ./apps /wrapps

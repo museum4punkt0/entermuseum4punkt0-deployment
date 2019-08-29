@@ -9,6 +9,10 @@
     owner: root
     group: docker
 
+- shell: mkdir "{{ service_root }}/apps"
+  args:
+    creates: "{{ service_root }}/apps"
+
 - copy:
     content: |
       BLAZEGRAPH_TAG={{ instance.blazegraph_image_tag }}
