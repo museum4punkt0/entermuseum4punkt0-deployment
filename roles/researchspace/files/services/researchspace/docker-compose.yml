@@ -3,9 +3,12 @@ version: "3.7"
 services:
 
   platform:
-    image: metaphacts/researchspace:${RESEARCHSPACE_TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile-platform
+      args:
+        RESEARCHSPACE_TAG: ${RESEARCHSPACE_TAG}
     restart: always
-    userns_mode: host  # b/c of mounted volume
     stop_grace_period: "1m"
     depends_on:
       - blazegraph
@@ -13,11 +16,19 @@ services:
       - default
       - webgateway
     volumes:
-      - ./apps:/apps:ro
       - researchspace-data:/runtime-data
     environment:
       JAVA_OPTS: ""
+      # some notes regarding the -DappsDirectory setting:
+      # - it relies on the invokation of jetty from the entrypoint.sh with
+      #   expanded environment variables in the order
+      #   $RUNTIME_OPTS $PLATFORM_OPTS
+      # - and the fact that the JVM favors the rightmost definition of an
+      #   option within these environment variables
+      # - it is a workaround for an issue that might be solved with
+      #   ResearchSpace 3.2
       PLATFORM_OPTS: >
+        -DappsDirectory=/wrapps
         -Dconfig.environment.sparqlEndpoint=http://blazegraph:8080/blazegraph/sparql
         -Dlog4j.configurationFile=file:///var/lib/jetty/webapps/etc/log4j2.xml
     labels:
@@ -51,7 +62,6 @@ services:
       - ./backup.sh:/backup.sh:ro
       - ${BORG_REPOSITORY}:/borg_repository
       - blazegraph-data:/src/blazegraph-data:ro
-      - ./apps:/src/researchspace-apps:ro
       - researchspace-data:/src/researchspace-data:ro
       - /var/lib/borg:/var/lib/borg
 
