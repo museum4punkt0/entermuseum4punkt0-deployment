@@ -9,9 +9,12 @@
     owner: root
     group: docker
 
-- shell: mkdir "{{ service_root }}/apps"
-  args:
-    creates: "{{ service_root }}/apps"
+- file:
+    path: "{{ service_root }}/apps"
+    state: directory
+    owner: root
+    group: docker
+    mode: ug=rwx,o=
 
 - copy:
     content: |
