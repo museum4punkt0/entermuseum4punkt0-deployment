@@ -1,0 +1,31 @@
+---
+
+- set_fact:
+    service_root: "{{ docker_services_path}}/assets-webserver"
+
+- name: ensure directory for assets exists
+  file:
+    path: "{{ assets_root_dir }}"
+    state: directory
+    owner: www-data
+    group: www-data
+
+- name: copy assets web server service configuration
+  copy:
+    src: services/assets-webserver/
+    dest: "{{ service_root }}"
+    owner: root
+    group: docker
+
+- name: write configuration variables for assets web server
+  copy:
+    dest: "{{ service_root }}/.env"
+    content: |
+      ASSETS_ROOT_DIR={{ assets_root_dir }}
+      WEB_DOMAIN={{ assets_web_domain }}
+    owner: root
+    group: docker
+
+- docker_compose:
+    project_src: "{{ service_root }}"
+    build: yes

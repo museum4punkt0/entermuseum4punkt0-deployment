@@ -6,8 +6,8 @@
   called *workstation*, the one(s) that are administered *host(s)*.
 - The directory where you found this document on the workstation will be
   referred to as *project folder*.
-- Most command examples in this document require that the current working
-  directory is that project folder.
+- Most command examples in this document require that the current *working
+  directory* is that project folder.
 - Command and configuration examples in this document contain value placeholders
   enclosed by angle brackets, e.g. `<ip of host>` would be substituted with the
   IP address of a host.
@@ -163,6 +163,10 @@ for details), and these variables can or must be set in either
 
 - `acme_email` (mandatory) - an email address that will be associated with the
   TLS certificates issued by [Let's encrypt](https://letsencrypt.org)
+- `assets_root_dir` (mandatory) - the directory path on the host where file
+  assets are located
+- `assets_web_domain` (mandatory) - the domain name that shall serve the asset
+  files
 - `backups_storage_path` (mandatory) - the path where an FTP resource is mounted
   for storing backup data
 - `borg_repokey` (mandatory) - a password to unlock an encrypted BorgBackup
@@ -225,6 +229,14 @@ where each mapping describes a desired instance. A mapping has these fields:
 - `researchspace_image_tag` - the tag of the `metaphacts/researchspace` image
   that shall be used
 
+Along with it a *single* web server for static assets is deployed.
+These variables must be configured for it:
+
+- `assets_root_dir` (mandatory) - the directory path on the host system that
+  contains the assets
+- `assets_web_domain` (mandatory) - the domain where the assets shall be
+  retrieved from
+
 Similarly to the base system configuration, this is apllied with:
 
     ansible-playbook researchspace.yml
@@ -234,6 +246,22 @@ host. To do so, log into the machine and:
 
     cd <docker_services_path>/researchspace-<name_suffix>
     docker-compose down
+
+There's also a script to synchronize a local folder on the workstation to the
+assets folder on the host. It can be invoked from the *project folder* as
+*working directory*:
+
+    ./upload-folder <path>
+
+where `<path>` is the folder that is to be synchronized. It's the last name
+component of `<path>` that will be the top-level folder on the web server, e.g.
+`./upload-folder ~/Downloads/yadda/yay` would result in a publicly available
+`https://objects.example.org/yay/`.
+
+IMPORTANT! The assets are mirrored *from* the workstation to the host. Any
+changes to files on the host are lost by a synchronization. Also mind that
+synchronization includes the deletion of files on the target that do not exist
+in the source.
 
 
 ## Deploying ResearchSpace Apps

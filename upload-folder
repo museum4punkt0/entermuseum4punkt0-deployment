@@ -1,0 +1,8 @@
+#!/bin/sh
+
+ABSOLUTE_PATH="$(cd "$(dirname "$1")"; pwd)/$(basename "$1")"
+
+# ensures that all fielname extensions are lower-case
+find $ABSOLUTE_PATH -type f -name "*.*" -exec sh -c 'a=$(echo "$0" | sed -r "s/([^.]*)\$/\L\1/"); [ "$a" != "$0" ] && mv "$0" "$a"' {} \;
+
+ansible-playbook sync-assets.yml --extra-vars "source_path=$ABSOLUTE_PATH"

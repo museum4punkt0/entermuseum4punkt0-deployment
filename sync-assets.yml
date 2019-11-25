@@ -1,0 +1,23 @@
+---
+
+- hosts: researchspace
+  become: true
+  tasks:
+    - name: synchronize assets
+      synchronize:
+        src: "{{ source_path }}/"
+        dest: "{{ assets_root_dir }}/{{ source_path|basename }}"
+        rsync_opts: --delete-before
+        use_ssh_args: yes
+    - name: set ownership to www-data
+      file:
+        path: "{{ assets_root_dir }}"
+        owner: www-data
+        group: www-data
+        mode: a=rx
+        state: directory
+        recurse: yes
+    - name: set proper access rights
+      shell: |
+        find {{ assets_root_dir|quote }} -type d -exec chmod a=rx {} \;
+        find {{ assets_root_dir|quote }} -type f -exec chmod a=r {} \;
