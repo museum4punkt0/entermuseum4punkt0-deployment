@@ -79,3 +79,7 @@ The Ansible playbook to configure a host for ResearchSpace deployments.
 
 The Ansible playbook to mirror the static asset files from the workstation to
 the host.
+
+## `upload-folder`
+
+A CLI wrapper around the `sync-assets.yml` playbook.
