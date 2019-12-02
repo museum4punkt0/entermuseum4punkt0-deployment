@@ -1,13 +1,13 @@
 ---
 
-- name: restart journald
-  listen: restart journald
+- listen: reload journald
   command: systemctl reload systemd-journald.service
 
-- name: reload sshd
-  listen: reload sshd
+- listen: reload sshd
   command: systemctl reload sshd.service
 
-- name: reload systemd
-  listen: reload systemd
+- listen: reload systemd
   command: systemctl daemon-reload
+
+- listen: restart dockerd
+  command: systemctl restart docker.service

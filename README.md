@@ -53,11 +53,6 @@ An installation via [brew](https://brew.sh) is recommended:
 
 ## Initial setup of a remote host
 
-The Docker daemon will be configured to use the `btrfs` volume driver and thus
-the directory `/var/lib/docker` must reside on a filesystem of that type. The
-necessary data volume should be configured during the installation of a host
-operating system or as one of the very first post-installation steps.
-
 Before Ansible can be used to configure a host, a target host needs to be
 prepared *once*. This folder contains a script `janitor_setup.sh` that you can
 transfer to the target, log into the machine and execute with administration

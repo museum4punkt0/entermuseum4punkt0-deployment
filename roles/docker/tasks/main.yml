@@ -10,6 +10,11 @@
     filename: docker
     repo: "deb https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} stable"
 
+- name: install Docker
+  apt:
+    name: docker-ce
+    state: latest
+
 - name: create Docker configuration folder
   file:
     path: /etc/docker
@@ -18,18 +23,14 @@
     group: docker
     mode: ug=rwx,o=
 
-- name: write Docker configuration
+- name: write Docker daemon configuration
   copy:
     dest: /etc/docker/daemon.json
-    content: '{"log-driver": "journald", "storage-driver": "btrfs", "userns-remap": "default"}'
+    content: '{"log-driver": "journald", "userns-remap": "default"}'
     owner: root
     group: root
     mode: ug=r,o=
-
-- name: install Docker
-  apt:
-    name: docker-ce
-    state: latest
+  notify: restart dockerd
 
 - name: install Docker-Compose
   pip:

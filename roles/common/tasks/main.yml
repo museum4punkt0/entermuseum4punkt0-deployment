@@ -62,11 +62,3 @@
       minute: "{{ daily_reboot_minute }}"
       job: /sbin/reboot
   when: daily_reboot_time != ''
-
-- name: configure a monthly btrfs scrub
-  copy:
-    dest: /etc/cron.monthly/btrfs-scrub
-    content: btrfs scrub start /var/lib/docker
-    owner: root
-    group: root
-    mode: ug=rx,o=

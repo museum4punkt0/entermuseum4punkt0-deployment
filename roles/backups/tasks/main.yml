@@ -3,7 +3,7 @@
 - name: install required borg backup
   apt:
     name:
-      - borgbackup=1.1*
+      - borgbackup=1.1.*
     state: present
 
 - name: install curlftpfs and sysvinit-utils

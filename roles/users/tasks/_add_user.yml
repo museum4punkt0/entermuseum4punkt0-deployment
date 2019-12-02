@@ -2,6 +2,7 @@
 
 - name: check whether user exists
   command: getent passwd {{ user }}
+  failed_when: false
   register: user_existed
 
 - name: create users
@@ -34,12 +35,3 @@
     owner: "{{ user }}"
     group: "{{ user }}"
     mode: ug=rwx,o=
-
-- name: link Docker client's config.json for user
-  file:
-    dest: /home/{{ user }}/.docker/config.json
-    src: /etc/docker/config.json
-    state: link
-    owner: "{{ user }}"
-    group: "{{ user }}"
-    mode: ugo=rwx

@@ -6,8 +6,8 @@
     borg_repository: "{{ backups_storage_path }}/borg_repository"
   roles:
     - common
-    - backups
     - docker
+    - backups
     - deck-chores
     - traefik
     - users
