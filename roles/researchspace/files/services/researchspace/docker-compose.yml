@@ -37,7 +37,7 @@ services:
       - traefik.enable=true
 
   blazegraph:
-    image: metaphacts/blazegraph-basic:${BLAZEGRAPH_TAG}
+    image: researchspace/blazegraph:${BLAZEGRAPH_TAG}
     restart: always
     stop_grace_period: "1m"
     environment:
