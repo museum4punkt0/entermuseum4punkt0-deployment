@@ -277,12 +277,23 @@ facilitated with:
 
 ## Asssorted knowledge that may prove useful at some point
 
-### Possible pitfalls
+### Copying the 'runtime' app from a ResearchSpace instance
 
-All system users share the same access token that was created by logging in
-with the credentials of a user on `hub.docker.com` that has the privilege to
-ccess the image repository that contains the ResearchSpace image.
-As a result any `docker login` or `docker logout` is effective for all users.
+ResearchSpace facilitates the development of apps via a web-interface. The
+resulting files are stored in the `/runtime-data` folder of the executing
+environment. Here, that environment is a Docker managed container.
+In order to retrieve such contents, first the relevant container's name must be
+figured out, best by running `docker-compose ps` in the designated instance's
+definition directory on the host. The reulting list contains one item that ends
+with `_platform_1`, the whole name is to be used in the command to copy the
+contents to the user's directory:
+
+    docker cp <container_name>:/runtime-data ~/<some_app_name>
+
+The result can then be copied to the workstation (where this command is invoked)
+as well:
+
+    scp -r <host>:~/<some_app_name> <local_target_folder>
 
 ### Troubleshooting 101
 
