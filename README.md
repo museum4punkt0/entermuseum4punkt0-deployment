@@ -272,7 +272,7 @@ facilitated with:
 
     # this first command is optional, but recommended if you had edited an
     # app with the same name through the web interface
-    docker-compose exec platform rm /runtime-data/apps/<app_name>
+    docker-compose exec platform rm -r /runtime-data/apps/<app_name>
     # <app_name> can be a wildcard like * to delete all web-edited apps
 
     docker-compose build --no-cache
