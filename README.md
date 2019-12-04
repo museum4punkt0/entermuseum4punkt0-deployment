@@ -270,7 +270,13 @@ can be added, e.g. by cloning from a `git` repository.
 If a changed app requires a restart of the ResearchSpace platform, it can be
 facilitated with:
 
-    docker-compose up --build -d
+    # this first command is optional, but recommended if you had edited an
+    # app with the same name through the web interface
+    docker-compose exec platform rm /runtime-data/apps/<app_name>
+    # <app_name> can be a wildcard like * to delete all web-edited apps
+
+    docker-compose build --no-cache
+    docker-compose up -d
 
 (executed with the aforementioned directory as working directory.)
 
