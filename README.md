@@ -240,7 +240,9 @@ Removing a mapping will not remove the instance configuration and data from the
 host. To do so, log into the machine and:
 
     cd <docker_services_path>/researchspace-<name_suffix>
-    docker-compose down
+    docker-compose down --volumes
+
+This can also be used when an instance has been corrupted, *all data is lost*.
 
 There's also a script to synchronize a local folder on the workstation to the
 assets folder on the host. It can be invoked from the *project folder* as
@@ -270,10 +272,11 @@ can be added, e.g. by cloning from a `git` repository.
 If a changed app requires a restart of the ResearchSpace platform, it can be
 facilitated with:
 
-    # this first command is optional, but recommended if you had edited an
-    # app with the same name through the web interface
-    docker-compose exec platform rm -r /runtime-data/apps/<app_name>
-    # <app_name> can be a wildcard like * to delete all web-edited apps
+    # first, all changed and added, but unneeded files *must* be removed, e.g.
+    # with this very broad command. BEWARE that this might delete data that is
+    # actually still needed. hence more specific deletion targets are highly
+    # recommended.
+    docker-compose exec platform sh -c "rm -r /runtime-data/*"
 
     docker-compose build --no-cache
     docker-compose up -d
@@ -288,18 +291,25 @@ facilitated with:
 ResearchSpace facilitates the development of apps via a web-interface. The
 resulting files are stored in the `/runtime-data` folder of the executing
 environment. Here, that environment is a Docker managed container.
-In order to retrieve such contents, first the relevant container's name must be
-figured out, best by running `docker-compose ps` in the designated instance's
-definition directory on the host. The reulting list contains one item that ends
-with `_platform_1`, the whole name is to be used in the command to copy the
-contents to the user's directory:
+The ResearchSpace platform has an export function to download a zip-file with
+the contents. In order to retrieve such contents, first the relevant container's
+name must be figured out, best by running `docker-compose ps` in the designated
+instance's definition directory on the host. The resulting list contains one
+item that ends with `_platform_1`, the whole name is to be used in the command
+to copy the contents to the user's directory:
 
-    docker cp <container_name>:/runtime-data ~/<some_app_name>
+    docker cp <container_name>:/runtime-data ~/<some_folder_name>
 
 The result can then be copied to the workstation (where this command is invoked)
 as well:
 
-    scp -r <host>:~/<some_app_name> <local_target_folder>
+    scp -r <host>:~/<some_folder_name> <local_target_folder>
+
+Be aware that the result has also other contents than just the changed
+application files (`/runtime-data` *is not* an application) and the relevant
+files must be selected manually for inclusion into the application's source
+tree.
+
 
 ### Troubleshooting 101
 
