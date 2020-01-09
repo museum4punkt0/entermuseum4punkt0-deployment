@@ -21,6 +21,7 @@
       BLAZEGRAPH_TAG={{ instance.blazegraph_image_tag }}
       BORG_PASSPHRASE={{ borg_repokey }}
       BORG_REPOSITORY={{ borg_repository }}
+      EXTRA_PLATFORM_PROPERTIES={{ instance.extra_properties | default("") }}
       RESEARCHSPACE_TAG={{ instance.researchspace_image_tag }}
       WEB_DOMAIN={{ instance.web_domain }}
     dest: "{{ service_root }}/.env"

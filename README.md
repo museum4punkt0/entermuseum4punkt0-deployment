@@ -223,6 +223,10 @@ where each mapping describes a desired instance. A mapping has these fields:
   that shall be used for the Blazegraph service
 - `researchspace_image_tag` - the tag of the `metaphacts/researchspace` image
   that shall be used
+- `extra_properties` - this *optional* field can contain a space-separated
+  sequence of arbritrary Java configuration properties that are passed to the
+  platform on invokation, e.g.
+  `-Dconfig.environment.securityConfigStorageId=myapp`
 
 Along with it a *single* web server for static assets is deployed.
 These variables must be configured for it:

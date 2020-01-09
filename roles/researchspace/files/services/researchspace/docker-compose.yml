@@ -31,6 +31,7 @@ services:
         -DappsDirectory=/wrapps
         -Dconfig.environment.sparqlEndpoint=http://blazegraph:8080/blazegraph/sparql
         -Dlog4j.configurationFile=file:///var/lib/jetty/webapps/etc/log4j2.xml
+        ${EXTRA_PLATFORM_PROPERTIES}
     labels:
       - traefik.frontend.rule=Host:${WEB_DOMAIN}
       - traefik.port=8080
