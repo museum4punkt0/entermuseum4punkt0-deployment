@@ -2,6 +2,7 @@
 
 - hosts: researchspace
   become: true
+  gather_facts: no
   tasks:
     - name: synchronize assets
       synchronize:
