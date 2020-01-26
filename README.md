@@ -371,3 +371,20 @@ there, like properly formed paths, returned status codes and response times.
 Oh, on the other side, all major web browser have something like a "Developer
 Tools" window for web pages that can tell their point of view on the request-
 response-story in a tab often called "Network".
+
+## Genesis, credits, license and re-use
+
+This set of configuration declarations and related assets is part of the project
+museum4punkt0 - Digital Strategies for the Museum of the Future. Further
+information: https://www.museum4punkt0.de/en/
+
+It has been developed by Martin Wagner on behalf of the Stiftung Preußischer
+Kulturbesitz.
+
+The project museum4punkt0 is funded by the Federal Government Commissioner
+for Culture and the Media in accordance with a resolution issued by the German
+Bundestag (Parliament of the Federal Republic of Germany).
+
+The contents of this repository are licensed under the terms of
+[CreativeCommons BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+See [LICENSE.txt](./LICENSE.txt).
